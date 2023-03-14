@@ -1,8 +1,10 @@
 import numpy as np
 
+from ._base import Linear
+
 from ..metrics import MSE, Huber, BCE, Squared_hinge
 from ..optimizers import Adam, SGD
-from .base_model import Linear, BaseClassifier
+from ..base import BaseClassifier
 
 
 '''Regression models'''

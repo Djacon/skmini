@@ -8,8 +8,6 @@ from .linear_model import HuberRegressor
 from .linear_model import LogisticRegression
 from .linear_model import LinearSVC
 
-from .base_model import BaseRegressor, BaseClassifier
-
 __all__ = [
     'LinearRegression',
     'Ridge',
@@ -20,7 +18,4 @@ __all__ = [
 
     'LogisticRegression',
     'LinearSVC',
-
-    'BaseRegressor',
-    'BaseClassifier'
 ]
