@@ -25,7 +25,7 @@ class _Linear(BaseRegressor):
 
         # Alpha hyperparam (when penalty != 'None')
         if C:
-            self.alpha = 1 / C
+            self.alpha = 1 / (2*C)
         else:
             self.alpha = alpha
 

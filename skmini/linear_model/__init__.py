@@ -1,12 +1,14 @@
-from .linear_model import LinearRegression
-from .linear_model import Ridge
-from .linear_model import Lasso
-from .linear_model import ElasticNet
-from .linear_model import SGDRegressor
-from .linear_model import HuberRegressor
+from ._regression import LinearRegression
+from ._regression import Ridge
+from ._regression import Lasso
+from ._regression import ElasticNet
+from ._regression import SGDRegressor
+from ._regression import HuberRegressor
 
-from .linear_model import LogisticRegression
-from .linear_model import LinearSVC
+from ._classification import LinearSVC
+from ._classification import Perceptron
+from ._classification import SGDClassifier
+from ._classification import LogisticRegression
 
 __all__ = [
     'LinearRegression',
@@ -16,6 +18,8 @@ __all__ = [
     'SGDRegressor',
     'HuberRegressor',
 
-    'LogisticRegression',
     'LinearSVC',
+    'Perceptron',
+    'SGDClassifier',
+    'LogisticRegression',
 ]

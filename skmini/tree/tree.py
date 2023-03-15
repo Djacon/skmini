@@ -51,7 +51,7 @@ class Node:
 
 class _DecisionTree():
     '''Base Decision Tree Classifier'''
-    def __init__(self, criterion=entropy, max_depth=100, min_samples_split=2,
+    def __init__(self, criterion=gini, max_depth=100, min_samples_split=2,
                  max_features=None, random_state=None):
         self.criterion = criterion
         self.max_depth = max_depth
@@ -144,6 +144,7 @@ class _DecisionTree():
 
 
 class DecisionTreeClassifier(BaseClassifier, _DecisionTree):
+    '''Decision Tree Classifier model'''
     def __init__(self, criterion='gini', max_depth=100, min_samples_split=2,
                  max_features=None, random_state=None):
         super().__init__(CRITERIA_CLF[criterion], max_depth, min_samples_split,
@@ -154,6 +155,7 @@ class DecisionTreeClassifier(BaseClassifier, _DecisionTree):
 
 
 class DecisionTreeRegressor(BaseRegressor, _DecisionTree):
+    '''Decision Tree Regressor model'''
     def __init__(self, criterion='squared_error', max_depth=100,
                  min_samples_split=2, max_features=None, random_state=None):
         super().__init__(CRITERIA_REG[criterion], max_depth, min_samples_split,

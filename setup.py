@@ -11,4 +11,4 @@ setup(
     install_requires=["numpy>=1.17.3"],
 )
 
-# python3 setup.py sdist bdist_wheel
+# python setup.py sdist bdist_wheel
