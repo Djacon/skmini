@@ -10,7 +10,7 @@ def info(epoch, loss, lr):
     return f'Epoch: {epoch}, Loss: {loss:.6f}, eta: {lr:.6f}'
 
 
-class Linear(BaseRegressor):
+class _Linear(BaseRegressor):
     '''Base Linear Regressor'''
     def __init__(self, eval_metric=MSE(), penalty='', alpha=1e-4, l1_ratio=.15,
                  C=0, max_iter=10_000, optim=Adam(), batch_size=10,
@@ -90,7 +90,8 @@ class Linear(BaseRegressor):
             if self.verbose and epoch % self.verbose == 0:
                 print(info(epoch, loss, self.optim.lr))
 
-        print('Final ' + info(epoch, loss, self.optim.lr))
+        if self.verbose:
+            print('Final ' + info(epoch, loss, self.optim.lr))
 
     # Gradients for weights and bias
     def _grad(self, Y_pred, Xs):

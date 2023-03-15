@@ -1,6 +1,6 @@
 import numpy as np
 
-from ._base import Linear
+from ._base import _Linear
 
 from ..metrics import MSE, Huber, BCE, Squared_hinge
 from ..optimizers import Adam, SGD
@@ -10,7 +10,7 @@ from ..base import BaseClassifier
 '''Regression models'''
 
 
-class LinearRegression(Linear):
+class LinearRegression(_Linear):
     '''Simple Linear Regression model'''
     def __init__(self, max_iter=1000, optim=Adam(), batch_size=10,
                  verbose=1000):
@@ -18,7 +18,7 @@ class LinearRegression(Linear):
                          batch_size=batch_size, verbose=verbose)
 
 
-class Lasso(Linear):
+class Lasso(_Linear):
     '''Lasso model'''
     def __init__(self, alpha=1., max_iter=1000, optim=Adam(), batch_size=10,
                  verbose=1000):
@@ -27,7 +27,7 @@ class Lasso(Linear):
                          verbose=verbose)
 
 
-class Ridge(Linear):
+class Ridge(_Linear):
     '''Ridge model'''
     def __init__(self, alpha=1., max_iter=1000, optim=Adam(), batch_size=10,
                  verbose=1000):
@@ -36,7 +36,7 @@ class Ridge(Linear):
                          verbose=verbose)
 
 
-class ElasticNet(Linear):
+class ElasticNet(_Linear):
     '''ElasticNet model'''
     def __init__(self, alpha=1., l1_ratio=0.5, max_iter=1000, optim=Adam(),
                  batch_size=10, verbose=1000):
@@ -45,7 +45,7 @@ class ElasticNet(Linear):
                          batch_size=batch_size, verbose=verbose)
 
 
-class SGDRegressor(Linear):
+class SGDRegressor(_Linear):
     '''SGD Regressor model'''
     def __init__(self, eval_metric=MSE(), penalty='l2', alpha=1e-4, lr=1e-4,
                  max_iter=1000, l1_ratio=.15, batch_size=10, verbose=1000):
@@ -55,7 +55,7 @@ class SGDRegressor(Linear):
                          verbose=verbose)
 
 
-class HuberRegressor(Linear):
+class HuberRegressor(_Linear):
     '''Huber Regressor model'''
     def __init__(self, epsilon=1.35, max_iter=100, alpha=1e-4, optim=Adam(),
                  batch_size=10, verbose=1000):
@@ -67,7 +67,7 @@ class HuberRegressor(Linear):
 '''Classification models'''
 
 
-class LogisticRegression(BaseClassifier, Linear):
+class LogisticRegression(BaseClassifier, _Linear):
     '''Logistic Regression model'''
     def __init__(self, penalty='l2', C=1., max_iter=100, l1_ratio=.15,
                  optim=Adam(), batch_size=10, verbose=100):
@@ -80,7 +80,7 @@ class LogisticRegression(BaseClassifier, Linear):
         return 1 / (1 + np.exp(-y))
 
 
-class LinearSVC(BaseClassifier, Linear):
+class LinearSVC(BaseClassifier, _Linear):
     '''Linear SVC model'''
     def __init__(self, eval_metric=Squared_hinge(), penalty='l2', C=1.,
                  max_iter=1000, optim=SGD(), batch_size=10, verbose=100):

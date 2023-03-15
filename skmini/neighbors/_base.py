@@ -18,7 +18,7 @@ METRICS = {
 }
 
 
-class Neighbors(BaseClassifier):
+class _Neighbors(BaseClassifier):
     '''Base Neighbors Classifier'''
     def __init__(self, n_neighbors=5, distance='euclidean'):
         self.k = n_neighbors
