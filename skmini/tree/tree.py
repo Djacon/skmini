@@ -61,14 +61,12 @@ class _DecisionTree():
         self.random_state = random_state
 
     def fit(self, X, y):
-        if self.random_state:
-            np.random.seed(self.random_state)
-
         if self.max_features:
             self.max_features = min(self.max_features, X.shape[1])
         else:
             self.max_features = X.shape[1]
 
+        self._rng = np.random.RandomState(self.random_state)
         self.root = self._grow_tree(X, y)
 
     def predict(self, X):
@@ -83,7 +81,7 @@ class _DecisionTree():
             leaf_value = self._get_leaf_value(y)
             return Node(value=leaf_value)
 
-        feat_idxs = np.random.choice(n_features, self.max_features,
+        feat_idxs = self._rng.choice(n_features, self.max_features,
                                      replace=False)
 
         best_feat, best_thresh = self._best_criteria(X, y, feat_idxs)

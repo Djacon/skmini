@@ -5,12 +5,6 @@ from ..base import BaseClassifier, BaseRegressor
 from ..tree import DecisionTreeClassifier, DecisionTreeRegressor
 
 
-def _bootstrap_sample(X, y):
-    n_samples = X.shape[0]
-    idxs = np.random.choice(n_samples, n_samples, replace=True)
-    return X[idxs], y[idxs]
-
-
 class _BaseForest():
     '''Base Random Forest model'''
     def __init__(self, estimator=None, n_estimators=100, criterion='gini',
@@ -28,19 +22,20 @@ class _BaseForest():
         self.trees = []
 
     def fit(self, X, y):
-        if self.random_state:
-            np.random.seed(self.random_state)
+        n_samples = X.shape[0]
+
+        rng = np.random.RandomState(self.random_state)
 
         self.trees = []
         for _ in range(self.n_estimators):
             tree = self.estimator(
                 criterion=self.criterion, max_depth=self.max_depth,
                 min_samples_split=self.min_samples_split,
-                max_features=self.max_features)
+                max_features=self.max_features, random_state=self.random_state)
 
             if self.bootstrap:
-                X_sample, y_sample = _bootstrap_sample(X, y)
-                tree.fit(X_sample, y_sample)
+                idxs = rng.choice(n_samples, n_samples, replace=True)
+                tree.fit(X[idxs], y[idxs])
             else:
                 tree.fit(X, y)
 
