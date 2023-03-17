@@ -34,7 +34,7 @@ class _BaseForest():
                 max_features=self.max_features, random_state=self.random_state)
 
             if self.bootstrap:
-                idxs = rng.choice(n_samples, n_samples, replace=True)
+                idxs = rng.choice(n_samples, n_samples)
                 tree.fit(X[idxs], y[idxs])
             else:
                 tree.fit(X, y)
