@@ -17,14 +17,22 @@ def gini(y):
     return 1 - (ps**2).sum()
 
 
+def squared_error(y):
+    return y.var()  # or ((y - y.mean()) ** 2).mean()
+
+
+def absolute_error(y):
+    return np.abs(y - np.median(y)).mean()
+
+
 CRITERIA_CLF = {
     'entropy': entropy,
     'gini': gini,
 }
 
 CRITERIA_REG = {
-    'squared_error': lambda y: ((y - y.mean()) ** 2).mean(),  # or y.var()
-    'absolute_error': lambda y: np.abs(y - np.median(y)).mean()
+    'squared_error': squared_error,
+    'absolute_error': absolute_error,
 }
 
 
@@ -57,8 +65,8 @@ class BaseDecisionTree:
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
         self.max_features = max_features
-        self.tree = None
         self.random_state = random_state
+        self.tree = None
 
     def fit(self, X, y):
         # Check max_features variable
@@ -131,7 +139,7 @@ class BaseDecisionTree:
         return np.concatenate([averages, thresh])
 
     def _information_gain(self, X, y, threshold):
-        parent = self.criterion(y)
+        parent = self._criterion(y)
 
         left_idxs, right_idxs = self._split(X, threshold)
 

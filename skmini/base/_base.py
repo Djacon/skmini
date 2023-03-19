@@ -14,8 +14,8 @@ class RegressorMixin(BaseEstimator):
 
     _estimator_type = 'regressor'
 
-    # R2-score
     def score(self, X, y):
+        '''R2-score'''
         y = np.array(y)
         y_pred = self.predict(X)
         RSS = ((y - y_pred) ** 2).sum()
@@ -28,7 +28,7 @@ class ClassifierMixin(BaseEstimator):
 
     _estimator_type = 'classifier'
 
-    # Accuracy score
     def score(self, X, y):
+        '''Accuracy score'''
         y_pred = self.predict(X).round()
         return round((y == y_pred).mean(), 4)
