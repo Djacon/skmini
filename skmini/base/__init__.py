@@ -1,6 +1,6 @@
-from ._base import BaseRegressor, BaseClassifier
+from ._base import RegressorMixin, ClassifierMixin
 
 __all__ = [
-    'BaseRegressor',
-    'BaseClassifier',
+    'RegressorMixin',
+    'ClassifierMixin',
 ]

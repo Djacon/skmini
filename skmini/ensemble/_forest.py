@@ -1,7 +1,7 @@
 import numpy as np
 from statistics import mode
 
-from ..base import BaseClassifier, BaseRegressor
+from ..base import ClassifierMixin, RegressorMixin
 from ..tree import DecisionTreeClassifier, DecisionTreeRegressor
 
 
@@ -31,7 +31,7 @@ class _BaseForest():
             tree = self.estimator(
                 criterion=self.criterion, max_depth=self.max_depth,
                 min_samples_split=self.min_samples_split,
-                max_features=self.max_features, random_state=self.random_state)
+                max_features=self.max_features)
 
             if self.bootstrap:
                 idxs = rng.choice(n_samples, n_samples)
@@ -47,7 +47,7 @@ class _BaseForest():
         return np.array([self._get_vote(pred) for pred in preds])
 
 
-class RandomForestClassifier(BaseClassifier, _BaseForest):
+class RandomForestClassifier(ClassifierMixin, _BaseForest):
     def __init__(self, n_estimators=100, criterion='gini', max_depth=100,
                  min_samples_split=2, max_features=None, bootstrap=True,
                  random_state=None):
@@ -61,7 +61,7 @@ class RandomForestClassifier(BaseClassifier, _BaseForest):
         return mode(y)
 
 
-class RandomForestRegressor(BaseRegressor, _BaseForest):
+class RandomForestRegressor(RegressorMixin, _BaseForest):
     def __init__(self, n_estimators=100, criterion='squared_error',
                  max_depth=100, min_samples_split=2, max_features=None,
                  bootstrap=True, random_state=None):

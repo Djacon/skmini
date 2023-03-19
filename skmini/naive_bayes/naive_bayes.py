@@ -1,19 +1,16 @@
 import numpy as np
 
-from ..base import BaseClassifier
+from ..base import ClassifierMixin
 
 
-class _NaiveBayes(BaseClassifier):
-    '''Base Naive Bayes model'''
-    def score(self, X, y):
-        y_pred = self.predict(X)
-        return (y == y_pred).mean()
+class _BaseNB(ClassifierMixin):
+    '''Abstract base class for naive Bayes estimators'''
 
     def predict(self, X):
         return np.array([self._predict(x) for x in X])
 
 
-class GaussianNB(_NaiveBayes):
+class GaussianNB(_BaseNB):
     '''Gaussian Naive Bayes model'''
     def __init__(self, var_smoothing=1e-9):
         self.var_smoothing = var_smoothing

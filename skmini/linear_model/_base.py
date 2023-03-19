@@ -3,15 +3,14 @@ from random import choices
 
 from ..metrics import MSE
 from ..optimizers import Adam
-from ..base import BaseRegressor
 
 
 def info(epoch, loss, lr):
     return f'Epoch: {epoch}, Loss: {loss:.6f}, eta: {lr:.6f}'
 
 
-class _Linear(BaseRegressor):
-    '''Base Linear Regressor'''
+class LinearModel:
+    '''Base class for Linear Models'''
     def __init__(self, eval_metric=MSE(), penalty='', alpha=1e-4, l1_ratio=.15,
                  C=0, max_iter=10_000, optim=Adam(), batch_size=10,
                  verbose=1000):

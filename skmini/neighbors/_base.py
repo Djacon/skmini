@@ -1,7 +1,4 @@
-from statistics import mode
 import numpy as np
-
-from ..base import BaseClassifier
 
 
 def euclidean(x1, x2):
@@ -18,12 +15,11 @@ METRICS = {
 }
 
 
-class _Neighbors(BaseClassifier):
-    '''Base Neighbors Classifier'''
+class NeighborsBase:
+    '''Base class for nearest neighbors estimators'''
     def __init__(self, n_neighbors=5, distance='euclidean'):
         self.k = n_neighbors
         self.distance = METRICS[distance]
-        self.kfunc = mode
 
     def fit(self, X, y):
         self.X_train, self.y_train = np.array(X), np.array(y)

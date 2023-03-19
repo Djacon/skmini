@@ -1,13 +1,14 @@
-from ._base import _Linear
+from ._base import LinearModel
 
 from ..metrics import MSE, Huber
 from ..optimizers import Adam, SGD
+from ..base import RegressorMixin
 
 
 '''Regression Linear models'''
 
 
-class LinearRegression(_Linear):
+class LinearRegression(RegressorMixin, LinearModel):
     '''Simple Linear Regression model'''
     def __init__(self, max_iter=1000, optim=Adam(), batch_size=10,
                  verbose=1000):
@@ -15,7 +16,7 @@ class LinearRegression(_Linear):
                          batch_size=batch_size, verbose=verbose)
 
 
-class Lasso(_Linear):
+class Lasso(RegressorMixin, LinearModel):
     '''Lasso model'''
     def __init__(self, alpha=1., max_iter=1000, optim=Adam(), batch_size=10,
                  verbose=1000):
@@ -24,7 +25,7 @@ class Lasso(_Linear):
                          verbose=verbose)
 
 
-class Ridge(_Linear):
+class Ridge(RegressorMixin, LinearModel):
     '''Ridge model'''
     def __init__(self, alpha=1., max_iter=1000, optim=Adam(), batch_size=10,
                  verbose=1000):
@@ -33,7 +34,7 @@ class Ridge(_Linear):
                          verbose=verbose)
 
 
-class ElasticNet(_Linear):
+class ElasticNet(RegressorMixin, LinearModel):
     '''ElasticNet model'''
     def __init__(self, alpha=1., l1_ratio=0.5, max_iter=1000, optim=Adam(),
                  batch_size=10, verbose=1000):
@@ -42,7 +43,7 @@ class ElasticNet(_Linear):
                          batch_size=batch_size, verbose=verbose)
 
 
-class SGDRegressor(_Linear):
+class SGDRegressor(RegressorMixin, LinearModel):
     '''SGD Regressor model'''
     def __init__(self, eval_metric=MSE(), penalty='l2', alpha=1e-4, lr=1e-4,
                  max_iter=1000, l1_ratio=.15, batch_size=10, verbose=1000):
@@ -52,7 +53,7 @@ class SGDRegressor(_Linear):
                          verbose=verbose)
 
 
-class HuberRegressor(_Linear):
+class HuberRegressor(RegressorMixin, LinearModel):
     '''Huber Regressor model'''
     def __init__(self, epsilon=1.35, max_iter=100, alpha=1e-4, optim=Adam(),
                  batch_size=10, verbose=1000):

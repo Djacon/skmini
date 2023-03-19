@@ -1,7 +1,7 @@
 import numpy as np
 from statistics import mode
 
-from ..base import BaseClassifier, BaseRegressor
+from ..base import ClassifierMixin, RegressorMixin
 from ..tree import DecisionTreeClassifier, DecisionTreeRegressor
 
 
@@ -24,7 +24,7 @@ class _BaseBagging():
 
         self.estimators = []
         for _ in range(self.n_estimators):
-            estimator = clone(self.estimator)Bagging
+            estimator = clone(self.estimator)
 
             if self.bootstrap:
                 idxs = rng.choice(n_samples, n_samples)
@@ -40,7 +40,7 @@ class _BaseBagging():
         return np.array([self._get_vote(pred) for pred in preds])
 
 
-class BaggingClassifier(BaseClassifier, _BaseBagging):
+class BaggingClassifier(ClassifierMixin, _BaseBagging):
     def __init__(self, estimator=DecisionTreeClassifier(), n_estimators=10,
                  max_features=None, bootstrap=True, random_state=None):
         super().__init__(estimator=estimator,
@@ -52,7 +52,7 @@ class BaggingClassifier(BaseClassifier, _BaseBagging):
         return mode(y)
 
 
-class BaggingRegressor(BaseRegressor, _BaseBagging):
+class BaggingRegressor(RegressorMixin, _BaseBagging):
     def __init__(self, estimator=DecisionTreeRegressor(), n_estimators=10,
                  max_features=None, bootstrap=True, random_state=None):
         super().__init__(estimator=estimator,

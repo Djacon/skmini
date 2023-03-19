@@ -1,8 +1,18 @@
 import numpy as np
 
 
-class BaseRegressor:
-    '''Base Regressor model'''
+class BaseEstimator:
+    def clone(self):
+        return type(self)(**self.get_params())
+
+    # def get_params(self):
+    #     raise NotImplementedError('Subclasses must implement get_params()')
+
+
+class RegressorMixin(BaseEstimator):
+    '''Mixin class for all regressors in scikit-learn'''
+
+    _estimator_type = 'regressor'
 
     # R2-score
     def score(self, X, y):
@@ -13,8 +23,10 @@ class BaseRegressor:
         return round(1 - RSS/TSS, 4)
 
 
-class BaseClassifier:
-    '''Base Classifier model'''
+class ClassifierMixin(BaseEstimator):
+    '''Mixin class for all classifiers in scikit-learn'''
+
+    _estimator_type = 'classifier'
 
     # Accuracy score
     def score(self, X, y):

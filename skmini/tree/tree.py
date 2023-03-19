@@ -1,7 +1,7 @@
 import numpy as np
 from statistics import mode
 
-from ..base import BaseClassifier, BaseRegressor
+from ..base import ClassifierMixin, RegressorMixin
 
 
 '''Criterions'''
@@ -49,28 +49,43 @@ class Node:
             value={self.value})'
 
 
-class _DecisionTree():
-    '''Base Decision Tree Classifier'''
-    def __init__(self, criterion=gini, max_depth=100, min_samples_split=2,
+class BaseDecisionTree:
+    '''Base class for decision trees'''
+    def __init__(self, criterion=None, max_depth=100, min_samples_split=2,
                  max_features=None, random_state=None):
         self.criterion = criterion
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
         self.max_features = max_features
-        self.root = None
+        self.tree = None
         self.random_state = random_state
 
     def fit(self, X, y):
+        # Check max_features variable
         if self.max_features:
             self.max_features = min(self.max_features, X.shape[1])
         else:
             self.max_features = X.shape[1]
 
+        # Check criterion variable
+        if self._estimator_type == 'classifier':
+            self._criterion = CRITERIA_CLF[self.criterion]
+        else:
+            self._criterion = CRITERIA_REG[self.criterion]
+
+        # Specify seed and "grow" tree
         self._rng = np.random.RandomState(self.random_state)
-        self.root = self._grow_tree(X, y)
+        self.tree = self._grow_tree(X, y)
 
     def predict(self, X):
-        return np.array([self._traverse_tree(x, self.root) for x in X])
+        return np.array([self._traverse_tree(x, self.tree) for x in X])
+
+    def get_params(self):
+        return {'criterion': self.criterion,
+                'max_depth': self.max_depth,
+                'min_samples_split': self.min_samples_split,
+                'criterion': self.criterion,
+                'random_state': self.random_state}
 
     def _grow_tree(self, X, y, depth=0):
         n_samples, n_features = X.shape
@@ -123,8 +138,8 @@ class _DecisionTree():
         if len(left_idxs) == 0 or len(right_idxs) == 0:
             return 0
 
-        childs = len(left_idxs) * self.criterion(y[left_idxs]) +\
-            len(right_idxs) * self.criterion(y[right_idxs])
+        childs = len(left_idxs) * self._criterion(y[left_idxs]) +\
+            len(right_idxs) * self._criterion(y[right_idxs])
         return parent - childs / len(y)
 
     def _split(self, X, threshold):
@@ -141,22 +156,22 @@ class _DecisionTree():
         return self._traverse_tree(x, node.right)
 
 
-class DecisionTreeClassifier(BaseClassifier, _DecisionTree):
+class DecisionTreeClassifier(ClassifierMixin, BaseDecisionTree):
     '''Decision Tree Classifier model'''
     def __init__(self, criterion='gini', max_depth=100, min_samples_split=2,
                  max_features=None, random_state=None):
-        super().__init__(CRITERIA_CLF[criterion], max_depth, min_samples_split,
+        super().__init__(criterion, max_depth, min_samples_split,
                          max_features, random_state)
 
     def _get_leaf_value(self, y):
         return mode(y)
 
 
-class DecisionTreeRegressor(BaseRegressor, _DecisionTree):
+class DecisionTreeRegressor(RegressorMixin, BaseDecisionTree):
     '''Decision Tree Regressor model'''
     def __init__(self, criterion='squared_error', max_depth=100,
                  min_samples_split=2, max_features=None, random_state=None):
-        super().__init__(CRITERIA_REG[criterion], max_depth, min_samples_split,
+        super().__init__(criterion, max_depth, min_samples_split,
                          max_features, random_state)
 
     def _get_leaf_value(self, y):
