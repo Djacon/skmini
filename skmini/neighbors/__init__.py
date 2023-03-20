@@ -1,5 +1,5 @@
-from .neighbors import KNeighborsClassifier
-from .neighbors import KNeighborsRegressor
+from ._neighbors import KNeighborsClassifier
+from ._neighbors import KNeighborsRegressor
 
 __all__ = [
     'KNeighborsClassifier',

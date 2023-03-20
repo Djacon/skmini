@@ -1,4 +1,4 @@
-from .optim import SGD, RMSProp, Adam
+from ._optim import SGD, RMSProp, Adam
 
 __all__ = [
     'SGD',
