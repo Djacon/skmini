@@ -51,10 +51,10 @@ class DummyRegressor(RegressorMixin):
             constant = self.y_train.mean()
 
         elif self.strategy == 'median':
-            constant = self.y_train.median()
+            constant = np.median(self.y_train)
 
         elif self.strategy == 'quantile':
-            constant = self.y_train.quantile(self.quantile)
+            constant = np.quantile(self.y_train, self.quantile)
 
         elif self.strategy == 'constant':
             constant = self.constant
