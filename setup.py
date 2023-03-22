@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="skmini",
-    version='0.1.0',
+    version='0.1.1',
     author="Djacon",
     author_email="djaconfr@gmail.com",
     description="A simplified version of the sklearn library for ML",

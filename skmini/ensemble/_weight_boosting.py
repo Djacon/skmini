@@ -1,73 +1,83 @@
 import numpy as np
 
 from ..base import ClassifierMixin, RegressorMixin
-
-
-class DecisionStump:
-    def __init__(self):
-        self.polarity = 1
-        self.feature_idx = None
-        self.threshold = None
-        self.alpha = None
-
-    def predict(self, X):
-        n_samples = X.shape[0]
-        X_column = X[:, self.feature_idx]
-
-        predictions = np.ones(n_samples)
-        if self.polarity == 1:
-            predictions[X_column < self.threshold] = -1
-        else:
-            predictions[X_column > self.threshold] = -1
-        return predictions
+from ..tree import DecisionTreeClassifier, DecisionTreeRegressor
 
 
 class AdaBoostClassifier(ClassifierMixin):
-    def __init__(self, n_estimators=50):
+    '''Adaptive Boosting Classifier'''
+    def __init__(self, estimator=DecisionTreeClassifier(max_depth=1),
+                 n_estimators=50, learning_rate=1., random_state=None):
+        self.estimator = estimator
         self.n_estimators = n_estimators
+        self.learning_rate = learning_rate
+        self.random_state = random_state
+
+        self.estimator_weights = np.zeros(n_estimators)
+        # self.estimator_errors = np.zeros(n_estimators)
         self.estimators = []
 
     def fit(self, X, y):
-        n_samples, n_features = X.shape
+        n_samples = X.shape[0]
+        sample_weights = np.full(n_samples, 1 / n_samples)
 
-        # Init weights
-        w = np.full(n_samples, 1 / n_samples)
+        for i in range(self.n_estimators):
+            estimator = self.estimator.clone()
+            estimator.random_state = self.random_state
+            estimator.fit(X, y, sample_weight=sample_weights)
 
-        self.estimators = []
-        for _ in range(self.n_estimators):
-            estimator = DecisionStump()
+            y_pred = estimator.predict(X)
+            error = np.sum(sample_weights * np.abs(y_pred - y))
+            alpha = self.learning_rate * np.log((1 - error) / error)
 
-            min_err = float('inf')
-            for feature_idx in range(n_features):
-                X_column = X[:, feature_idx]
-                thresholds = np.unique(X_column)
-                for threshold in thresholds:
-                    p = 1
-                    y_preds = np.ones(n_samples)
-                    y_preds[X_column < threshold] = -1
-
-                    misclassified = w[y != y_preds]
-                    error = sum(misclassified)
-
-                    if error >= 0.5:
-                        error = 1 - error
-                        p = -1
-
-                    if error < min_err:
-                        min_err = error
-                        estimator.polarity = p
-                        estimator.threshold = threshold
-                        estimator.feature_idx = feature_idx
-
-            estimator.alpha = .5 * np.log((1 - min_err) / (min_err + 1e-10))
-
-            preds = estimator.predict(X)
-
-            w *= np.exp(-estimator.alpha * y * preds)
-            w /= np.sum(w)
+            sample_weights *= np.exp(alpha * np.abs(y_pred - y))
+            sample_weights /= np.sum(sample_weights)
 
             self.estimators.append(estimator)
+            self.estimator_weights[i] = alpha
+            # self.estimator_errors[i] = error
 
     def predict(self, X):
-        pred = [estim.alpha * estim.predict(X) for estim in self.estimators]
-        return np.sign(np.sum(pred, axis=0))
+        preds = np.zeros(X.shape[0])
+        for i, estimator in enumerate(self.estimators):
+            preds += self.estimator_weights[i] * estimator.predict(X)
+
+
+class AdaBoostRegressor(RegressorMixin):
+    '''Adaptive Boosting Classifier'''
+    def __init__(self, estimator=DecisionTreeRegressor(max_depth=3),
+                 n_estimators=50, learning_rate=1., random_state=None):
+        self.estimator = estimator
+        self.n_estimators = n_estimators
+        self.learning_rate = learning_rate
+        self.random_state = random_state
+
+        self.estimator_weights = np.zeros(n_estimators)
+        # self.estimator_errors = np.zeros(n_estimators)
+        self.estimators = []
+
+    def fit(self, X, y):
+        n_samples = X.shape[0]
+        sample_weights = np.full(n_samples, 1 / n_samples)
+
+        for i in range(self.n_estimators):
+            estimator = self.estimator.clone()
+            estimator.random_state = self.random_state
+            estimator.fit(X, y, sample_weight=sample_weights)
+
+            y_pred = estimator.predict(X)
+            error = np.sum(sample_weights * np.abs(y_pred - y))
+            alpha = self.learning_rate * np.log((1 - error) / error)
+
+            sample_weights *= np.exp(alpha * np.abs(y_pred - y))
+            sample_weights /= np.sum(sample_weights)
+
+            self.estimators.append(estimator)
+            self.estimator_weights[i] = alpha
+            # self.estimator_errors[i] = error
+
+    def predict(self, X):
+        preds = np.zeros(X.shape[0])
+        for i, estimator in enumerate(self.estimators):
+            preds += self.estimator_weights[i] * estimator.predict(X)
+        return preds
