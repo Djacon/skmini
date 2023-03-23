@@ -16,6 +16,23 @@ class SGD:
         return self.lr * dW, self.lr * db
 
 
+class Momentum:
+    '''Momentum Optimizer'''
+    def __init__(self, lr=1e-4, beta=0.9):
+        self.beta = beta
+        self.lr = lr
+
+    def init(self, W):
+        self.mw = np.zeros_like(W)
+        self.mb = 0
+
+    def update(self, dW, db, _):
+        self.mw = self.beta * self.mw + self.lr * dW
+        self.mb = self.beta * self.mb + self.lr * db
+
+        return self.mw, self.mb
+
+
 class RMSProp:
     '''Root Mean Squared Propagation'''
     def __init__(self, lr=1e-4, beta=0.99, eps=1e-8):
