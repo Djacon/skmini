@@ -13,7 +13,7 @@ class LinearModel:
     '''Base class for Linear Models'''
     def __init__(self, eval_metric=MSE(), penalty='', alpha=1e-4, l1_ratio=.15,
                  C=0, max_iter=10_000, optim=Adam(), batch_size=10,
-                 verbose=1000):
+                 random_state=None, verbose=1000):
         # Weights & biases
         self.W = []
         self.b = 0
@@ -53,29 +53,35 @@ class LinearModel:
         # When set to True, use solution of the previous call to fit as init
         self.warm_start = False
 
+        # Random State (for generating samples)
+        self.random_state = random_state
+
         # The logging level to output to stdout
         self.verbose = verbose
 
-    # Xs: matrix [NxM], ys: vector [Nx1]
+    # Xs: matrix [NxM], ys: vector [NxK]
     def fit(self, Xs, ys):
-        if not self.warm_start:
-            self.warm_start = True
-            self.W = np.zeros(len(Xs[0]))
-            self.b = 0
-
-            self.optim.init(self.W)
+        # Random State (for generating samples)
+        self._rng = np.random.RandomState(self.random_state)
 
         # Convert to numpy arrays
         Xs = np.array(Xs)
         ys = np.array(ys)
 
+        if not self.warm_start:
+            self.warm_start = True
+
+            self._init_weights(Xs, ys)
+            self.optim.init(self.W)
+
         # Start Iterative learning
         for epoch in range(self.max_iter):
-            batches = choices(range(len(ys)), k=self.batch_size)
+            batches = self._rng.choice(len(ys), self.batch_size)
+            # batches = choices(range(len(ys)), k=self.batch_size)
             Xs_batch = Xs[batches]
             ys_batch = ys[batches]
 
-            y_preds = self.predict(Xs_batch)
+            y_preds = self._predict(Xs_batch)
             Y_pred = self.grad(ys_batch, y_preds)
 
             loss = self.loss(ys_batch, y_preds).mean()
@@ -92,9 +98,15 @@ class LinearModel:
         if self.verbose:
             print('Final ' + info(epoch, loss, self.optim.lr))
 
+    # Initialize new weights
+    def _init_weights(self, Xs, ys):
+        n_features = Xs.shape[1]
+        self.W = np.zeros(n_features)
+        self.b = np.zeros((1,))
+
     # Gradients for weights and bias
     def _grad(self, Y_pred, Xs):
-        dW = (Y_pred @ Xs) / Y_pred.shape[0]
+        dW = (Xs.T @ Y_pred) / Y_pred.shape[0]
         db = Y_pred.mean()
         return dW, db
 
@@ -116,6 +128,9 @@ class LinearModel:
         dW += self.alpha * (self.l1_ratio * np.sign(self.W) +
                             (1 - self.l1_ratio) * self.W)
         return dW, db
+
+    def _predict(self, Xs):
+        return self.predict(Xs)
 
     def predict(self, Xs):
         return Xs @ self.W + self.b

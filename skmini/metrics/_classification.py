@@ -4,14 +4,20 @@ import numpy as np
 '''Classification Metrics'''
 
 
-class BCE:
-    '''Binary CrossEntropy (LogLoss) for y in {0,1}'''
-    def loss(self, y, y_pred):
-        return -np.where(y == 1, np.log(y_pred), np.log(1-y_pred))
+class Softmax:
+    '''Softmax CrossEntropy with MSE loss'''
+    def loss(self, y, y_pred_hot):
+        y_hot = self._one_hot_encoder(y, y_pred_hot)
+        return ((y_hot - y_pred_hot) ** 2).sum(axis=1)
 
-    def grad(self, y, y_pred):
-        return y_pred - y
-#         return np.where(y == 1, -1 / y_pred, 1 / (1 - y_pred))
+    def grad(self, y, y_pred_hot):
+        y_hot = self._one_hot_encoder(y, y_pred_hot)
+        return 2 * (y_pred_hot - y_hot)
+
+    def _one_hot_encoder(self, y, y_pred_hot):
+        y_hot = np.zeros_like(y_pred_hot)
+        y_hot[np.arange(len(y)), y] = 1
+        return y_hot
 
 
 class Hinge:
