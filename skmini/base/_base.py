@@ -32,3 +32,11 @@ class ClassifierMixin(BaseEstimator):
         '''Accuracy score'''
         y_pred = self.predict(X).round()
         return round((y == y_pred).mean(), 4)
+
+
+class TransformerMixin(BaseEstimator):
+    '''Mixin class for all transformers in scikit-learn'''
+
+    def fit_transform(self, values):
+        self.fit(values)
+        return self.transform(values)
