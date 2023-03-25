@@ -20,6 +20,7 @@ class RegressorMixin(BaseEstimator):
         y_pred = self.predict(X)
         RSS = ((y - y_pred) ** 2).sum()
         TSS = ((y - y.mean()) ** 2).sum()
+        # print('TSS', TSS)
         return round(1 - RSS/TSS, 4)
 
 

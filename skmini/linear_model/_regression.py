@@ -65,11 +65,34 @@ class HuberRegressor(RegressorMixin, LinearModel):
                          random_state=random_state, verbose=verbose)
 
 
+'''Regression LinearCV models'''
+
+
 class LassoCV(RegressorMixin, LinearModelCV):
-    '''Lasso model'''
-    def __init__(self, alphas=[1.], cv=5, max_iter=1000, optim=Adam(), batch_size=10,
-                 random_state=None, verbose=0):
-        estimator = Lasso(eval_metric=MSE(), penalty='l1',
-                          max_iter=max_iter, optim=optim, batch_size=batch_size,
-                          random_state=random_state, verbose=verbose)
+    '''Lasso cross-validation model'''
+    def __init__(self, alphas=[1.], cv=5, max_iter=1000, optim=Adam(),
+                 batch_size=10, random_state=None, verbose=0):
+        estimator = Lasso(max_iter=max_iter, optim=optim,
+                          batch_size=batch_size, random_state=random_state,
+                          verbose=verbose)
+        super().__init__(estimator=estimator, alphas=alphas, cv=cv)
+
+
+class RidgeCV(RegressorMixin, LinearModelCV):
+    '''Ridge cross-validation model'''
+    def __init__(self, alphas=[1.], cv=5, max_iter=1000, optim=Adam(),
+                 batch_size=10, random_state=None, verbose=0):
+        estimator = Ridge(max_iter=max_iter, optim=optim,
+                          batch_size=batch_size, random_state=random_state,
+                          verbose=verbose)
+        super().__init__(estimator=estimator, alphas=alphas, cv=cv)
+
+
+class ElasticNetCV(RegressorMixin, LinearModelCV):
+    '''Ridge cross-validation model'''
+    def __init__(self, alphas=[1.], cv=5, l1_ratio=0.5, max_iter=1000,
+                 optim=Adam(), batch_size=10, random_state=None, verbose=0):
+        estimator = ElasticNet(max_iter=max_iter, optim=optim,
+                               l1_ratio=l1_ratio, batch_size=batch_size,
+                               random_state=random_state, verbose=verbose)
         super().__init__(estimator=estimator, alphas=alphas, cv=cv)

@@ -145,14 +145,21 @@ class LinearModelCV:
         best_alpha = 0
         best_score = float('-inf')
 
-        # Make cross-validation for find out best alpha
+        # Cross-validator
+        kf = KFold(self.cv, shuffle=True,
+                   random_state=self.estimator.random_state)
+        folds = list(kf.split(X, y))
+
+        # Make cross-validation to find out best alpha
         for alpha in self.alphas:
+            self.estimator.alpha = alpha  # my small glitch :)
+
             scores = []
-            for train_idx, test_idx in KFold(self.cv).split():
-                self.estimator.alpha = alpha  # my small glitch :)
+            for train_idx, test_idx in folds:
                 self.estimator.fit(X[train_idx], y[train_idx])
                 score = self.estimator.score(X[test_idx], y[test_idx])
                 scores.append(score)
+
             mean_score = np.mean(scores)
             if mean_score > best_score:
                 best_score = mean_score
@@ -161,6 +168,8 @@ class LinearModelCV:
         # Set best alpha hyperparam
         self.estimator.alpha = best_alpha
         self.estimator.fit(X, y)
+
+        self.alpha_ = best_alpha
 
     def predict(self, X):
         return self.estimator.predict(X)
