@@ -7,7 +7,7 @@ from ._data import StandardScaler
 __all__ = [
     'LabelEncoder',
 
-    'Normalizer'
+    'Normalizer',
     'MinMaxScaler',
     'StandardScaler',
 ]

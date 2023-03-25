@@ -1,8 +1,8 @@
 import numpy as np
-from random import choices
 
 from ..metrics import MSE
 from ..optimizers import Adam
+from ..model_selection import KFold
 
 
 def info(epoch, loss, lr):
@@ -13,7 +13,7 @@ class LinearModel:
     '''Base class for Linear Models'''
     def __init__(self, eval_metric=MSE(), penalty='', alpha=1e-4, l1_ratio=.15,
                  C=0, max_iter=10_000, optim=Adam(), batch_size=10,
-                 random_state=None, verbose=1000):
+                 random_state=None, verbose=0):
         # Weights & biases
         self.W = []
         self.b = 0
@@ -68,11 +68,9 @@ class LinearModel:
         Xs = np.array(Xs)
         ys = np.array(ys)
 
-        if not self.warm_start:
-            self.warm_start = True
-
-            self._init_weights(Xs, ys)
-            self.optim.init(self.W)
+        # Init weights and optimizer
+        self._init_weights(Xs, ys)
+        self.optim.init(self.W)
 
         # Start Iterative learning
         for epoch in range(self.max_iter):
@@ -134,3 +132,35 @@ class LinearModel:
 
     def predict(self, Xs):
         return Xs @ self.W + self.b
+
+
+class LinearModelCV:
+    '''Base Linear model with cross-validation'''
+    def __init__(self, estimator=None, alphas=[1.], cv=5):
+        self.estimator = estimator
+        self.alphas = alphas
+        self.cv = cv
+
+    def fit(self, X, y):
+        best_alpha = 0
+        best_score = float('-inf')
+
+        # Make cross-validation for find out best alpha
+        for alpha in self.alphas:
+            scores = []
+            for train_idx, test_idx in KFold(self.cv).split():
+                self.estimator.alpha = alpha  # my small glitch :)
+                self.estimator.fit(X[train_idx], y[train_idx])
+                score = self.estimator.score(X[test_idx], y[test_idx])
+                scores.append(score)
+            mean_score = np.mean(scores)
+            if mean_score > best_score:
+                best_score = mean_score
+                best_alpha = alpha
+
+        # Set best alpha hyperparam
+        self.estimator.alpha = best_alpha
+        self.estimator.fit(X, y)
+
+    def predict(self, X):
+        return self.estimator.predict(X)

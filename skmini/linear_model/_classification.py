@@ -13,7 +13,7 @@ from ..base import ClassifierMixin
 class LogisticRegression(ClassifierMixin, LinearModel):
     '''Logistic Regression model'''
     def __init__(self, penalty='l2', C=1., max_iter=1000, l1_ratio=.15,
-                 optim=Adam(), batch_size=10, random_state=None, verbose=100):
+                 optim=Adam(), batch_size=10, random_state=None, verbose=0):
         super().__init__(penalty=penalty, eval_metric=Softmax(), C=C,
                          l1_ratio=l1_ratio, max_iter=max_iter, optim=optim,
                          batch_size=batch_size, random_state=random_state,
@@ -47,7 +47,7 @@ class LinearSVC(ClassifierMixin, LinearModel):
     '''Linear SVC model'''
     def __init__(self, eval_metric=Squared_hinge(), penalty='l2',
                  C=1., max_iter=1000, optim=SGD(), batch_size=10,
-                 random_state=None, verbose=100):
+                 random_state=None, verbose=0):
         super().__init__(penalty=penalty, eval_metric=eval_metric, C=C,
                          max_iter=max_iter, optim=optim, batch_size=batch_size,
                          random_state=random_state, verbose=verbose)
@@ -60,7 +60,7 @@ class SGDClassifier(ClassifierMixin, LinearModel):
     '''SGD Classifier model'''
     def __init__(self, eval_metric=Hinge(), penalty='l2', C=1.,
                  max_iter=1000, optim=SGD(), batch_size=10,
-                 random_state=None, verbose=100):
+                 random_state=None, verbose=0):
         super().__init__(penalty=penalty, eval_metric=eval_metric, C=C,
                          max_iter=max_iter, optim=optim, batch_size=batch_size,
                          random_state=random_state, verbose=verbose)
@@ -72,7 +72,7 @@ class SGDClassifier(ClassifierMixin, LinearModel):
 class Perceptron(ClassifierMixin, LinearModel):
     '''Perceptron Classifier model'''
     def __init__(self, penalty='l2', C=1., max_iter=1000, optim=SGD(),
-                 batch_size=10, random_state=None, verbose=100):
+                 batch_size=10, random_state=None, verbose=0):
         super().__init__(penalty=penalty, eval_metric=Hinge(0), C=C,
                          max_iter=max_iter, optim=optim, batch_size=batch_size,
                          random_state=random_state, verbose=verbose)
