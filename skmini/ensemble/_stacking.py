@@ -32,6 +32,7 @@ class BaseStacking:
 
 
 class StackingClassifier(ClassifierMixin, BaseStacking):
+    '''Stacking Classifier model'''
     def __init__(self, estimators, final_estimator=LogisticRegression(),
                  cv=5):
         super().__init__(estimators=estimators,
@@ -39,6 +40,7 @@ class StackingClassifier(ClassifierMixin, BaseStacking):
 
 
 class StackingRegressor(RegressorMixin, BaseStacking):
+    '''Stacking Regressor model'''
     def __init__(self, estimators, final_estimator=RidgeCV(), cv=5):
         super().__init__(estimators=estimators,
                          final_estimator=final_estimator, cv=cv)

@@ -13,6 +13,9 @@ from ._weight_boosting import AdaBoostClassifier
 from ._stacking import StackingClassifier
 from ._stacking import StackingRegressor
 
+from ._gb import GradientBoostingClassifier
+from ._gb import GradientBoostingRegressor
+
 __all__ = [
     'RandomForestClassifier',
     'RandomForestRegressor',
@@ -28,4 +31,7 @@ __all__ = [
 
     'StackingClassifier',
     'StackingRegressor',
+
+    'GradientBoostingClassifier',
+    'GradientBoostingRegressor',
 ]
