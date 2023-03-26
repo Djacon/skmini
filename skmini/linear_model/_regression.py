@@ -58,7 +58,7 @@ class SGDRegressor(RegressorMixin, LinearModel):
 
 class HuberRegressor(RegressorMixin, LinearModel):
     '''Huber Regressor model'''
-    def __init__(self, epsilon=1.35, max_iter=100, alpha=1e-4, optim=Adam(),
+    def __init__(self, epsilon=1.35, max_iter=1000, alpha=1e-4, optim=Adam(),
                  random_state=None, batch_size=10, verbose=0):
         super().__init__(eval_metric=Huber(epsilon), penalty='l2', alpha=alpha,
                          max_iter=max_iter, optim=optim, batch_size=batch_size,
@@ -70,8 +70,8 @@ class HuberRegressor(RegressorMixin, LinearModel):
 
 class LassoCV(RegressorMixin, LinearModelCV):
     '''Lasso cross-validation model'''
-    def __init__(self, alphas=[1.], cv=5, max_iter=1000, optim=Adam(),
-                 batch_size=10, random_state=None, verbose=0):
+    def __init__(self, alphas=(0.1, 1.0, 10.0), cv=5, max_iter=1000,
+                 optim=Adam(), batch_size=10, random_state=None, verbose=0):
         estimator = Lasso(max_iter=max_iter, optim=optim,
                           batch_size=batch_size, random_state=random_state,
                           verbose=verbose)
@@ -80,8 +80,8 @@ class LassoCV(RegressorMixin, LinearModelCV):
 
 class RidgeCV(RegressorMixin, LinearModelCV):
     '''Ridge cross-validation model'''
-    def __init__(self, alphas=[1.], cv=5, max_iter=1000, optim=Adam(),
-                 batch_size=10, random_state=None, verbose=0):
+    def __init__(self, alphas=(0.1, 1.0, 10.0), cv=5, max_iter=1000,
+                 optim=Adam(), batch_size=10, random_state=None, verbose=0):
         estimator = Ridge(max_iter=max_iter, optim=optim,
                           batch_size=batch_size, random_state=random_state,
                           verbose=verbose)
@@ -90,8 +90,9 @@ class RidgeCV(RegressorMixin, LinearModelCV):
 
 class ElasticNetCV(RegressorMixin, LinearModelCV):
     '''Ridge cross-validation model'''
-    def __init__(self, alphas=[1.], cv=5, l1_ratio=0.5, max_iter=1000,
-                 optim=Adam(), batch_size=10, random_state=None, verbose=0):
+    def __init__(self, alphas=(0.1, 1.0, 10.0), cv=5, l1_ratio=0.5,
+                 max_iter=1000, optim=Adam(), batch_size=10, random_state=None,
+                 verbose=0):
         estimator = ElasticNet(max_iter=max_iter, optim=optim,
                                l1_ratio=l1_ratio, batch_size=batch_size,
                                random_state=random_state, verbose=verbose)

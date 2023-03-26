@@ -10,6 +10,9 @@ from ._voting import VotingRegressor
 from ._weight_boosting import AdaBoostClassifier
 # from ._weight_boosting import AdaBoostRegressor
 
+from ._stacking import StackingClassifier
+from ._stacking import StackingRegressor
+
 __all__ = [
     'RandomForestClassifier',
     'RandomForestRegressor',
@@ -22,4 +25,7 @@ __all__ = [
 
     'AdaBoostClassifier',
     # 'AdaBoostRegressor',
+
+    'StackingClassifier',
+    'StackingRegressor',
 ]

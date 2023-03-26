@@ -41,6 +41,7 @@ class AdaBoostClassifier(ClassifierMixin):
         preds = np.zeros(X.shape[0])
         for i, estimator in enumerate(self.estimators):
             preds += self.estimator_weights[i] * estimator.predict(X)
+        return preds
 
 
 class AdaBoostRegressor(RegressorMixin):
