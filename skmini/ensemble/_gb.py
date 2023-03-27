@@ -40,6 +40,7 @@ class BaseGradientBoosting:
 
 
 class GradientBoostingClassifier(ClassifierMixin, BaseGradientBoosting):
+    '''Gradient Boosting Classifier model'''
     def __init__(self, loss=MSE(), learning_rate=.1, n_estimators=100,
                  criterion='squared_error', min_samples_split=2, max_depth=3,
                  max_features=None, random_state=None):
@@ -50,12 +51,12 @@ class GradientBoostingClassifier(ClassifierMixin, BaseGradientBoosting):
                          random_state=random_state)
 
     def predict(self, X):
-        pred = self.lr * np.sum([tree.predict(X) for tree in self.trees],
-                                axis=0)
-        return np.round(pred + self.F0)
+        preds = np.sum([tree.predict(X) for tree in self.trees], axis=0)
+        return np.round(self.F0 + self.lr * preds)
 
 
 class GradientBoostingRegressor(RegressorMixin, BaseGradientBoosting):
+    '''Gradient Boosting Regressor model'''
     def __init__(self, loss=MSE(), learning_rate=.1, n_estimators=100,
                  criterion='squared_error', min_samples_split=2, max_depth=3,
                  max_features=None, random_state=None):
@@ -66,6 +67,5 @@ class GradientBoostingRegressor(RegressorMixin, BaseGradientBoosting):
                          random_state=random_state)
 
     def predict(self, X):
-        pred = self.lr * np.sum([tree.predict(X) for tree in self.trees],
-                                axis=0)
-        return pred + self.F0
+        preds = np.sum([tree.predict(X) for tree in self.trees], axis=0)
+        return self.F0 + self.lr * preds

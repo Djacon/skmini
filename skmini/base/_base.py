@@ -40,3 +40,9 @@ class TransformerMixin(BaseEstimator):
     def fit_transform(self, values):
         self.fit(values)
         return self.transform(values)
+
+
+class ClusterMixin(BaseEstimator):
+    """Mixin class for all cluster estimators in scikit-learn."""
+
+    _estimator_type = 'clusterer'

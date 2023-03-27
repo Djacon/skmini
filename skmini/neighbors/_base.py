@@ -1,17 +1,11 @@
 import numpy as np
 
-
-def euclidean(x1, x2):
-    return ((x1 - x2)**2).sum() ** .5
-
-
-def manhattan(x1, x2):
-    return np.abs(x1 - x2).sum()
+from ..metrics.pairwise import euclidean_distances, manhattan_distances
 
 
 METRICS = {
-    'euclidean': euclidean,
-    'manhattan': manhattan
+    'euclidean': euclidean_distances,
+    'manhattan': manhattan_distances
 }
 
 
