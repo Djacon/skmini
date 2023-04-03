@@ -59,7 +59,7 @@ class LinearModel:
         # The logging level to output to stdout
         self.verbose = verbose
 
-    # Xs: matrix [NxM], ys: vector [NxK]
+    # Xs: matrix [NxM], ys: matrix [NxK]
     def fit(self, Xs, ys):
         # Random State (for generating samples)
         self._rng = np.random.RandomState(self.random_state)
