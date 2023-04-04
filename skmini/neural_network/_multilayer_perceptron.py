@@ -1,5 +1,7 @@
 import numpy as np
 
+from . import Tensor
+
 from ..base import ClassifierMixin, RegressorMixin
 from ..optimizers import Adam
 
@@ -17,13 +19,42 @@ class Linear:
         # Number of output features
         self.out_features = out_features
 
-        # Initialize new weights
-        self.W = np.zeros(in_features)
-        self.b = 0
+        # Initialize new weights from [-k^.5, k^.5]
+        sqrt_k = (1 / in_features) ** .5
+        self.W = np.random.uniform(-sqrt_k, sqrt_k, (in_features,
+                                                     out_features))
+        self.b = np.random.uniform(-sqrt_k, sqrt_k, out_features)
 
-    def forward(self, X):
+        # Transform weights to autograd tensor
+        self.W = Tensor(self.W)
+        self.b = Tensor(self.b)
+
+    def __call__(self, X):
         '''Return a tensor of output data'''
         return X @ self.W + self.b
+
+    def __repr__(self):
+        return f'Linear(in_features={self.in_features}, ' +\
+                f'out_features={self.out_features})'
+
+
+class Sequential:
+    '''Simple implementation of Sequential container'''
+    def __init__(self, *layers):
+        self.layers = list(layers)
+
+    def __call__(self, xs):
+        out = xs
+        for layer in self.layers:
+            out = layer(out)
+        return out
+
+    def add(self, layer):
+        self.layers.append(layer)
+
+    def __repr__(self):
+        repr = ''.join(f'  {layer}\n' for layer in self.layers)
+        return f'Sequential(\n{repr})'
 
 
 class BaseMultilayerPerceptron:

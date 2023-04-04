@@ -1,4 +1,5 @@
 from math import log, exp
+import numpy as np
 
 
 class BinaryFunction:
@@ -115,6 +116,17 @@ class Exp(Function):
         super().__init__(exp, exp)
 
 
+class Abs(Function):
+    def __init__(self):
+        def deriv(input):
+            if input > 0:
+                return 1
+            if input < 0:
+                return -1
+            return 0
+        super().__init__(abs, deriv)
+
+
 class ReLU(Function):
     def __init__(self):
         def func(input):
@@ -169,6 +181,7 @@ _Pow = Pow()
 
 # Initialize Main Activation Functions as build-in
 _Exp = Exp()
+_Abs = Abs()
 _ReLU = ReLU()
 _Tanh = Tanh()
 _Sigmoid = Sigmoid()
@@ -244,6 +257,9 @@ class Value:
     def sigmoid(self):
         return _Sigmoid(self)
 
+    def abs(self):
+        return _Abs(self)
+
     def __add__(self, other):
         return _Add(self, other)
 
@@ -278,3 +294,6 @@ class Value:
         grad_fn = f', grad_fn={self.grad_fn}' if self.grad_fn else ''
         return f"Value(data={round(self.data, 4)}, " +\
             f"grad={round(self.grad, 4)}{grad_fn})"
+
+
+Tensor = np.vectorize(Value)
